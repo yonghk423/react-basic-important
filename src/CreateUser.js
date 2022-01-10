@@ -1,9 +1,9 @@
 import React from 'react';
 
 function CreateUser({ username, email, onChange, onCreate }) {
-  console.log(onCreate)
-  console.log(username)
-  console.log(email)
+  // console.log(onCreate)
+  // console.log(username)
+  // console.log(email)
   
     return (
     <div>
