@@ -1,27 +1,23 @@
-import React, { useEffect } from 'react';
-function UserList({ users, onRemove, onToggle }) {
+import React, { useContext } from 'react';
+// User 컴포넌트에서 바로 dispatch 를 사용 할건데요, 그렇게 하기 위해서는 
+// useContext 라는 Hook 을 사용해서 우리가 만든 UserDispatch Context 를 조회해야한다.
+import { UserDispatch } from './App'
+
+function UserList({ users }) {
   return (
     <div>
       {users.map(user => (
         <User 
         user={user} 
-        key={user.id} 
-        onRemove={onRemove} 
-        onToggle={onToggle}
+        key={user.id}         
         />
       ))}
     </div>
   );
 }
-//마운트 / 언마운트
-function User({ user, onRemove, onToggle }) {  
-  useEffect(() => {
-    console.log('컴포넌트가 화면에 나타남');
-    return () => {
-      console.log('컴포넌트가 화면에서 사라짐')
-    }
-  }, [])
-  
+//------------------------------------------------------------------------------
+function User({ user }) {    
+  const dispatch = useContext(UserDispatch);
   return (
     <div>
       <b
@@ -29,13 +25,22 @@ function User({ user, onRemove, onToggle }) {
           cursor: 'pointer',
           color: user.active ? 'green' : 'black'
         }}
-        onClick={() => onToggle(user.id)}
+        onClick={() => {
+          dispatch({
+            type : 'TOGGLE_USER',
+            id: user.id
+          });
+        }}
       >
         {user.username}
       </b>
       &nbsp; 
       <span>({user.email})</span>
-      <button onClick={() => onRemove(user.id)}>삭제</button>
+      <button onClick={() => {
+        dispatch({
+          type: 'REMOVE_USER', id: user.id
+        });
+      }}>삭제</button>
     </div>
   );
 }
@@ -54,4 +59,4 @@ function User({ user, onRemove, onToggle }) {
 // 따라서 이런 문제들을 해결하기 위해 onClick에 콜백 함수를 넣어주고, 해당 함수가 실행될 때 user.id를 건네주어 실행시키는 방법으로 처리를 하는거에요
 
 
-export default UserList;
+export default React.memo(UserList);
